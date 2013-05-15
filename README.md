@@ -1,5 +1,3 @@
-[currently broken]
-
 # grunt-qunit-amd
 
 > Grunt plugin to run Qunit tests on your AMD libraries without having to create html pages.
@@ -95,6 +93,9 @@ Read the [RequireJS documentation](http://www.requirejs.org/)
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+
+## Todo
+- update requirejs and load it as a dependency
 
 ## Thanks
 This library exists because I've been working with these guys and I learned a lot of stuff about testing: [Marco Pracucci](https://github.com/pracucci), [Rocco Zanni](https://github.com/roccozanni), [Luca Lischetti](https://github.com/sirlisko)
