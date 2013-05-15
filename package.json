@@ -33,7 +33,10 @@
     "node-phantom": "git://github.com/alexscheelmeyer/node-phantom.git#7b82108a45ad22a3ca38f1383593e66d5369d574",
     "requirejs": "~2.1.6",
     "qunitjs": "~1.11.0",
-    "grunt-contrib-jshint": "~0.1.1"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.1.1",
+    "grunt": "~0.4.1"
   },
   "peerDependencies": {
     "grunt": "~0.4.1"

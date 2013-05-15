@@ -102,7 +102,7 @@ module.exports = function(grunt, testOpt, done){
 					var dependencies = [__dirname + "/helper.js", __dirname +"/../node_modules/qunitjs/qunit/qunit.js"];
 
 					if (testOpt.data.include) {
-						dependencies = dependencies.concat(testOpt.data.include.map(function(f){ return cwd+'/'+f; }));
+						dependencies = dependencies.concat(testOpt.data.include.map(function(f){ return __dirname+'/../'+f; }));
 					}
 
 					injectDependency(page, dependencies, function(){
