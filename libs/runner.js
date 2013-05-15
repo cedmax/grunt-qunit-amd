@@ -27,6 +27,7 @@ module.exports = function(grunt, testOpt, done){
 				if (!verbose){
 					grunt.log.subhead('Files: ' + (suiteResults.files) + ' Tests: ' + (suiteResults.success + suiteResults.failure) + ' Success: ' + suiteResults.success + ' Failed: ' + suiteResults.failure);
 				}
+				phantom.exit();
 				done(suiteResults.failure? false : true);
 			}
 		}
