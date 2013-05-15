@@ -54,7 +54,7 @@ module.exports = function(grunt, testOpt, done){
 				script.charset = 'utf-8';
 
 				script.setAttribute('data-main', 'file://'+ paths.cwd + '/'+  test + '.js');
-				script.src = 'file://'+ paths.lib + '/../node_modules/requirejs/require.js';
+				script.src = 'file://'+ paths.lib + '/require.js';
 
 				document.head.appendChild(script);
 
