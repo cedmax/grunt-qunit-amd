@@ -54,7 +54,7 @@ module.exports = function(grunt, testOpt, done){
 				script.charset = 'utf-8';
 
 				script.setAttribute('data-main', 'file://'+ paths.cwd + '/'+  test );
-				script.src = 'file://'+ paths.cwd + '/node_modules/requirejs/require.js';
+				script.src = 'file://'+ paths.lib + '/../node_modules/requirejs/require.js';
 
 				document.head.appendChild(script);
 
@@ -99,8 +99,7 @@ module.exports = function(grunt, testOpt, done){
 						return;
 					}
 					testRunning = true;
-
-					var dependencies = [__dirname + "/helper.js", cwd +"/node_modules/qunitjs/qunit/qunit.js"];
+					var dependencies = [__dirname + "/helper.js", __dirname +"/../node_modules/qunitjs/qunit/qunit.js"];
 
 					if (testOpt.data.include) {
 						dependencies = dependencies.concat(testOpt.data.include.map(function(f){ return cwd+'/'+f; }));
