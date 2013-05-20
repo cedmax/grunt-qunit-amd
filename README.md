@@ -32,7 +32,7 @@ grunt.initConfig({
 		],
 		tests: [
 			"test/*Test.js"
-		]
+		],
 		require: {
 			baseUrl: 'assets/javascripts/src',
 			paths: {
@@ -41,7 +41,7 @@ grunt.initConfig({
 			}
 		}
 	}
-  },
+  }
 })
 ```
 
