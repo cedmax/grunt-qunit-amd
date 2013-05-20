@@ -24,26 +24,41 @@ In your project's Gruntfile, add a section named `qunit_amd` to the data object 
 
 ```js
 grunt.initConfig({
-  qunit_amd: {
-    unit: {
-		include: [
-			'test/lib/helper.js',
-			'test/lib/sinon-1.5.1.js'
-		],
-		tests: [
-			"test/*Test.js"
-		],
-		require: {
-			baseUrl: 'assets/javascripts/src',
-			paths: {
-				jquery: 'public/javascripts/jquery-2.0.0.min',
-				mustache: 'public/javascripts/mustache',
+	qunit_amd: {
+    	unit: function(test){
+			var config = {
+				include: [
+					'test/lib/helper.js',
+					'test/lib/sinon-1.5.1.js'
+				],
+				require: {
+					baseUrl: 'assets/javascripts/src',
+					paths: {
+						jquery: 'public/javascripts/jquery-2.0.0.min',
+						mustache: 'public/javascripts/mustache',
+					}
+				}
 			}
+			if (test) {
+				config.tests = ["test/assets/unit/"+test+".js"];
+			} else {
+				config.tests = ["test/assets/unit/*.js"];
+			}
+			return config;
 		}
-	}
-  }
+  	}
 })
 ```
+
+```
+#to launch all tests:
+grunt qunit_amd:unit
+
+#to launch just one test:
+grunt qunit_amd:unit:myTestFileName
+```
+
+
 
 ### Options
 
@@ -93,9 +108,6 @@ Read the [RequireJS documentation](http://www.requirejs.org/)
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
-
-## Todo
-- update requirejs and load it as a dependency
 
 ## Thanks
 This library exists because I've been working with these guys and I learned a lot of stuff about testing: [Marco Pracucci](https://github.com/pracucci), [Rocco Zanni](https://github.com/roccozanni), [Luca Lischetti](https://github.com/sirlisko)
