@@ -50,7 +50,7 @@ grunt.initConfig({
 })
 ```
 
-```
+```sh
 #to launch all tests:
 grunt qunit_amd:unit
 
