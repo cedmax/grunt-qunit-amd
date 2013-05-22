@@ -136,18 +136,18 @@ module.exports = function(grunt, testOpt, done){
 									message = testResult.message;
 
 								if (result) {
-									console.log("grunt.log.ok('"+ message +"')");
+									console.log("grunt.log.ok('"+ (message || "").replace('\'', '\\\'') +"')");
 
 								} else {
-									console.log("grunt.log.fail('"+message+"')");
+									console.log("grunt.log.fail('"+ (message || "").replace('\'', '\\\'')+"')");
 
 									if (typeof expected!== 'undefined') {
 										//expected = expected+"";
-										console.log("grunt.log.error(' expected: "+ expected +"')");
+										console.log("grunt.log.error(' expected: "+ (expected || "").replace('\'', '\\\'') +"')");
 									}
 									if (typeof actual!== 'undefined') {
 										//actual = actual+"";
-										console.log("grunt.log.error(' actual: "+ actual +"')");
+										console.log("grunt.log.error(' actual: "+ (actual || "").replace('\'', '\\\'') +"')");
 									}
 								}
 							};
