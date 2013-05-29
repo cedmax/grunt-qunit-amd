@@ -2,7 +2,7 @@
 
 var phantom = {
 	log: function(txt){
-		console.log("grunt.log.writeln('"+ ((typeof txt === "string")? txt.replace(/\\'/g, "\'") : txt) +"')");
+		console.log("grunt.log.writeln('"+ ((typeof txt === "string")? txt.replace(/\'/g, "\\'") : txt) +"')");
 	}
 };
 
