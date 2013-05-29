@@ -136,10 +136,10 @@ module.exports = function(grunt, testOpt, done){
 									message = testResult.message;
 
 								if (result) {
-									console.log("grunt.log.ok('"+ message.replace(/\'/g, "\\'") +"')");
+									console.log("grunt.log.ok('"+ (message || "").replace(/\'/g, "\\'") +"')");
 
 								} else {
-									console.log("grunt.log.fail('"+ message.replace(/\n/g, "\\n").replace(/\'/g, "\\'") +"')");
+									console.log("grunt.log.fail('"+ (message || "").replace(/\n/g, "\\n").replace(/\'/g, "\\'") +"')");
 
 									if (typeof expected!== 'undefined') {
 										console.log("grunt.log.error(' expected: "+ expected.toString().replace(/\'/g, "\\'") +"')");
