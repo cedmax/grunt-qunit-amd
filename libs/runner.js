@@ -79,6 +79,7 @@ module.exports = function(grunt, testOpt, done){
 			return phantom.createPage(function(e, page) {
 
 				page.onConsoleMessage = function(text){
+					console.log(text)
 					if (text.indexOf('grunt.log')===0 && verbose){
 						/* jshint evil: true */
 						eval(text);

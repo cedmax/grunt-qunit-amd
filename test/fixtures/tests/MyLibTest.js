@@ -5,7 +5,7 @@ require(['MyLib'], function(MyLib){
 	QUnit.start();
 
 	test('module attach _gaq as global', 2, function(){
-
+		phantom.log('<div id="">');
 		equal(MyLib.a, 1, "this should be green");
 		equal(MyLib.a, 2, "this should be red");
 	});
