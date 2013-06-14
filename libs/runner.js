@@ -124,7 +124,7 @@ module.exports = function(grunt, testOpt, done){
 
 							QUnit.testStart = function(obj){
 								testRunning = obj.name;
-								console.log("grunt.log.subhead('"+obj.name+"')");
+								console.log("grunt.log.subhead('"+ obj.name.replace(/\'/g, "\\'") +"')");
 							};
 
 							QUnit.log = function(testResult){
