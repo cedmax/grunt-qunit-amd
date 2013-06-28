@@ -23,12 +23,34 @@ module.exports = function(grunt) {
 		},
 		// Configuration to be run (and then tested).
 		qunit_amd: {
-			unit: {
-				include: ['test/fixtures/libs/helper.js'],
-				tests: ["test/fixtures/tests/*.js"],
-				require: {
-					baseUrl: 'test/fixtures/src'
+			unit: function(file){
+				var config = {
+					include: ['test/fixtures/libs/helper.js'],
+					require: {
+						baseUrl: 'test/fixtures/src'
+					}
+				};
+				if (file) {
+					config.tests = ["test/fixtures/tests/"+file+"Test.js"];
+				} else {
+					config.tests = ["test/fixtures/tests/*.js"];
 				}
+				return config;
+			},
+			verbose: function(file){
+				var config = {
+					include: ['test/fixtures/libs/helper.js'],
+					require: {
+						baseUrl: 'test/fixtures/src'
+					},
+					verbose:true
+				};
+				if (file) {
+					config.tests = ["test/fixtures/tests/"+file+"Test.js"];
+				} else {
+					config.tests = ["test/fixtures/tests/*.js"];
+				}
+				return config;
 			}
 		}
 	});
@@ -39,6 +61,6 @@ module.exports = function(grunt) {
 
 
 	// By default, lint and run all tests.
-	grunt.registerTask('default', [ 'jshint', 'qunit_amd']);
+	grunt.registerTask('default', [ 'jshint', 'qunit_amd:unit']);
 
 };

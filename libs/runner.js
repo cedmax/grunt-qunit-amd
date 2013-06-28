@@ -188,7 +188,7 @@ module.exports = function(grunt, testOpt, done){
 				done(false);
 			}
 
-			verbose = (suiteResults.files === 1);
+			verbose = (suiteResults.files === 1 || testOpt.data.verbose);
 			return files;
 		}
 
