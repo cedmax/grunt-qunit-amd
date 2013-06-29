@@ -1,7 +1,14 @@
+/*global HTMLElement */
+
 'use strict';
 
 var phantom = {
 	log: function(txt){
+
+		if (typeof txt === "object"){
+			txt = (txt instanceof HTMLElement) ? txt.outerHTML : JSON.stringify(txt);
+		}
+
 		console.log("grunt.log.writeln('"+ ((typeof txt === "string")? txt.replace(/\'/g, "\\'") : txt) +"')");
 	}
 };
