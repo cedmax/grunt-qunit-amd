@@ -1,7 +1,7 @@
 {
   "name": "grunt-qunit-amd",
   "description": "Grunt plugin to run Qunit tests on your AMD libraries without having to create html pages.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "homepage": "https://github.com/cedmax/grunt-qunit-amd",
   "author": {
     "name": "cedmax",
@@ -25,7 +25,7 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt"
   },
   "dependencies": {
     "phantomjs": "~1.9.0-3",

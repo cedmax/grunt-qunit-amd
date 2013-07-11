@@ -53,6 +53,7 @@ module.exports = function(grunt) {
 				return config;
 			}
 		}
+
 	});
 
 	// Actually load this plugin's task(s).
@@ -61,6 +62,6 @@ module.exports = function(grunt) {
 
 
 	// By default, lint and run all tests.
-	grunt.registerTask('default', [ 'jshint', 'qunit_amd:unit']);
+	grunt.registerTask('default', ['jshint', 'qunit_amd:verbose']);
 
 };

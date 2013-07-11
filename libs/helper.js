@@ -5,11 +5,21 @@
 var phantom = {
 	log: function(txt){
 
-		if (typeof txt === "object"){
-			txt = (txt instanceof HTMLElement) ? txt.outerHTML : JSON.stringify(txt);
+		if (txt instanceof HTMLElement) {
+			txt = txt.outerHTML;
 		}
 
-		console.log("grunt.log.writeln('"+ ((typeof txt === "string")? txt.replace(/\'/g, "\\'") : txt) +"')");
+		if (typeof txt === "object"){
+			txt = JSON.stringify(txt);
+		}
+
+		if (typeof txt === "string"){
+			txt = JSON.stringify(txt);
+			txt = txt.substring(1, txt.length-1);
+			txt = txt.replace(/\'/g, "\\'");
+		}
+
+		console.log("grunt.log.writeln('"+ txt +"')");
 	}
 };
 
