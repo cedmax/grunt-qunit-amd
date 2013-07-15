@@ -7,7 +7,7 @@ require(['Another'], function(another){
 	var div = document.createElement("div");
 	div.innerHTML = "Let's have some random text \n multiline";
 
-	test('module attach _gaq as global', 1, function(){
+	test('Let\'s log a bounch of stuff', 1, function(){
 		phantom.log(div);
 		phantom.log(another);
 		phantom.log([1,2,3]);

@@ -4,7 +4,7 @@ require(['MyLib'], function(MyLib){
 	'use strict';
 	QUnit.start();
 
-	test('module attach _gaq as global (THIS TEST IS SUPPOSED TO FAIL!)', 2, function(){
+	test('THIS TEST IS SUPPOSED TO FAIL!', 2, function(){
 		equal(MyLib.a, 1, "this should be green");
 		equal(MyLib.a, 2, "this should be red");
 	});
