@@ -27,7 +27,8 @@ module.exports = function(grunt) {
 		phantom.create(callback(grunt, this, done) , {
 			phantomPath:require('phantomjs').path,
 			parameters: {
-				'local-storage-path': '/dev/null'
+				'local-storage-path': '/dev/null',
+				'web-security': false
 			}
 		});
 
