@@ -141,11 +141,11 @@ module.exports = function(grunt, testOpt, done){
 									console.log("grunt.log.fail('"+ (message || "test failed").replace(/\n/g, "\\n").replace(/\'/g, "\\'") +"')");
 
 									if (typeof expected!== 'undefined') {
-										console.log("grunt.log.error(' expected: "+ expected.toString().replace(/\'/g, "\\'") +"')");
+										console.log("grunt.log.error(' expected: "+ JSON.stringify(expected).replace(/\'/g, "\\'") +"')");
 									}
 									if (typeof actual!== 'undefined') {
 										//actual = actual+"";
-										console.log("grunt.log.error(' actual: "+ actual.toString().replace(/\'/g, "\\'") +"')");
+										console.log("grunt.log.error(' actual: "+ JSON.stringify(actual).replace(/\'/g, "\\'") +"')");
 									}
 								}
 							};
