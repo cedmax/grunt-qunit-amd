@@ -2,7 +2,7 @@
 
 var phantomHelper = require("./helper.js");
 
-module.exports = function(grunt, testOpt, done){
+module.exports = function(grunt, testOpt, done, coverage){
 
 	var suiteResults = { files: 0, success: 0, failure: 0 },
 		verbose = false, cwd = process.cwd();
@@ -12,6 +12,8 @@ module.exports = function(grunt, testOpt, done){
 		function handleResults(file, result, queue){
 			suiteResults.success += result.success;
 			suiteResults.failure += result.failure;
+
+			coverage(file, result.__coverage__);
 
 			if (verbose) {
 				grunt.log.writeln('');
@@ -58,7 +60,7 @@ module.exports = function(grunt, testOpt, done){
 
 				document.head.appendChild(script);
 
-			}, testOpt.data.require, {cwd: cwd, lib: __dirname},  test);
+			}, testOpt.require, {cwd: cwd, lib: __dirname},  test);
 		}
 
 
@@ -101,8 +103,8 @@ module.exports = function(grunt, testOpt, done){
 					testRunning = true;
 					var dependencies = [__dirname + "/helper.js", __dirname +"/../node_modules/qunitjs/qunit/qunit.js"];
 
-					if (testOpt.data.include) {
-						dependencies = dependencies.concat(testOpt.data.include.map(function(f){ return cwd + '/' + f; }));
+					if (testOpt.include) {
+						dependencies = dependencies.concat(testOpt.include.map(function(f){ return cwd + '/' + f; }));
 					}
 
 					injectDependency(page, dependencies, function(){
@@ -157,6 +159,9 @@ module.exports = function(grunt, testOpt, done){
 							}, function(){
 								if (page) {
 									page.evaluate(function(){
+										if (window.__coverage__){
+											current.__coverage__ = window.__coverage__;
+										}
 										return current;
 									}, function(e, result) {
 										page = null;
@@ -187,11 +192,11 @@ module.exports = function(grunt, testOpt, done){
 				done(false);
 			}
 
-			verbose = (suiteResults.files === 1 || testOpt.data.verbose);
+			verbose = (suiteResults.files === 1 || testOpt.verbose);
 			return files;
 		}
 
-		var queue = initialize(grunt.file.expand(testOpt.data.tests));
+		var queue = initialize(grunt.file.expand(testOpt.tests));
 		loadSuite(queue.shift(), queue);
 	};
 };

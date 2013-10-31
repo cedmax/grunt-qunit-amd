@@ -21,7 +21,6 @@ module.exports = function(grunt) {
 				jshintrc: '.jshintrc',
 			}
 		},
-		// Configuration to be run (and then tested).
 		qunit_amd: {
 			unit: function(file){
 				var config = {
@@ -43,7 +42,11 @@ module.exports = function(grunt) {
 					require: {
 						baseUrl: 'test/fixtures/src'
 					},
-					verbose:true
+					verbose:true,
+					coverage: {
+						tmp: 'tmp',
+						out: 'tmp'
+					}
 				};
 				if (file) {
 					config.tests = ["test/fixtures/tests/"+file+"Test.js"];
@@ -62,6 +65,6 @@ module.exports = function(grunt) {
 
 
 	// By default, lint and run all tests.
-	grunt.registerTask('default', ['jshint', 'qunit_amd:verbose']);
+	grunt.registerTask('default', ['qunit_amd:verbose']);
 
 };

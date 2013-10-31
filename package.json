@@ -31,7 +31,9 @@
     "phantomjs": "~1.9.0-3",
     "node-phantom": "git://github.com/cedmax/node-phantom.git#2d04f4d6b269d08dd9ab96b504d42d053cebbde1",
     "qunitjs": "~1.11.0",
-    "requirejs": "2.1.8"
+    "requirejs": "2.1.8",
+    "grunt": "~0.4.1",
+    "grunt-istanbul": "~0.2.3"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.1.1",
