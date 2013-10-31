@@ -83,8 +83,8 @@ module.exports = function(grunt, testOpt, done){
 						eval(text);
 						/* jshint evil: false */
 					} else {
-						grunt.log.verbose.writeln(text);
-					}
+                        grunt.log.verbose.writeln(text);
+                    }
 				};
 
 				page.onError = function(e){
@@ -132,7 +132,19 @@ module.exports = function(grunt, testOpt, done){
 
 								var expected = testResult.expected,
 									actual = testResult.actual,
-									message = testResult.message;
+									message = testResult.message,
+                                    makeGruntFriendly = function (input) {
+                                        // Return the string 'isNaN' if that is the case
+                                        if (input.toString() === 'isNaN' && typeof input !== 'string') {
+                                            return 'isNaN';
+                                        // Return the string undefined if input is undefined
+                                        } else if (typeof input === 'undefined') {
+                                            return 'undefined';
+                                        // Return indication for JSON.parse to run and the stringified content
+                                        } else {
+                                            return JSON.stringify(input);
+                                        }
+                                    }
 
 								if (result) {
 									console.log("grunt.log.ok('"+ (message || "test successful").replace(/\'/g, "\\'") +"')");
@@ -141,11 +153,11 @@ module.exports = function(grunt, testOpt, done){
 									console.log("grunt.log.fail('"+ (message || "test failed").replace(/\n/g, "\\n").replace(/\'/g, "\\'") +"')");
 
 									if (typeof expected!== 'undefined') {
-										console.log("grunt.log.error(' expected: "+ expected.toString().replace(/\'/g, "\\'") +"')");
+										console.log("grunt.log.error(' expected: "+ makeGruntFriendly(expected).replace(/\'/g, "\\'") +"')");
 									}
 									if (typeof actual!== 'undefined') {
 										//actual = actual+"";
-										console.log("grunt.log.error(' actual: "+ actual.toString().replace(/\'/g, "\\'") +"')");
+										console.log("grunt.log.error(' actual: "+ makeGruntFriendly(actual).replace(/\'/g, "\\'") +"')");
 									}
 								}
 							};
