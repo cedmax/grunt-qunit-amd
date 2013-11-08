@@ -1,4 +1,3 @@
-
 /*
  * grunt-qunit-amd
  * https://github.com/cedmax/grunt-qunit-amd
@@ -53,8 +52,15 @@ module.exports = function(grunt) {
 
 		function prepareCoverage(coverage){
 			if (coverage){
+				var pattern = [data.require.baseUrl + "/**/*.js"];
+				if (data.coverage.pathsToCover){
+					data.coverage.pathsToCover.forEach(function(path){
+						pattern.push(data.require.paths[path] + '/**/*.js');
+					});
+				}
+
 				grunt.config.set('instrument', {
-					files: [data.require.baseUrl + "/**//*.js"],
+					files: pattern,
 					options : {
 						lazy : true,
 						basePath : data.coverage.tmp
@@ -64,7 +70,7 @@ module.exports = function(grunt) {
 				data.require.baseUrl = data.coverage.tmp + '/' + data.require.baseUrl;
 				if (data.coverage.pathsToCover){
 					data.coverage.pathsToCover.forEach(function(path){
-						data.require.paths[path] = data.coverage.tmp + data.require.paths[path];
+						data.require.paths[path] = data.coverage.tmp +'/'+ data.require.paths[path];
 					});
 				}
 			}
