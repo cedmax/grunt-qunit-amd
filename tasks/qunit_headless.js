@@ -31,7 +31,9 @@ module.exports = function(grunt) {
 
 		var data = grunt.config.get('qunit_amd_child');
 
-		phantom.create(callback(grunt, data, done, cover(data.coverage.tmp)) , {
+		var coverage = (data.coverage && data.coverage.tmp)? cover(data.coverage.tmp) : function(){};
+
+		phantom.create(callback(grunt, data, done, coverage) , {
 			phantomPath:require('phantomjs').path,
 			parameters: {
 				'local-storage-path': '/dev/null',
@@ -59,26 +61,36 @@ module.exports = function(grunt) {
 					}
 				});
 				grunt.task.run('instrument');
+				data.require.baseUrl = data.coverage.tmp + '/' + data.require.baseUrl;
+				if (data.coverage.pathsToCover){
+					data.coverage.pathsToCover.forEach(function(path){
+						data.require.paths[path] = data.coverage.tmp + data.require.paths[path];
+					});
+				}
+			}
+		}
+
+		function reportCoverage(coverage){
+			if (coverage){
+				grunt.config.set('makeReport', {
+					src: data.coverage.tmp + '/*.json',
+					options : {
+						type : data.coverage.type || 'html',
+						dir : data.coverage.out,
+						print : 'detail'
+					}
+				});
+
+				grunt.task.run('makeReport');
 			}
 		}
 
 		prepareCoverage(data.coverage);
 
-		data.require.baseUrl = data.coverage.tmp + '/' + data.require.baseUrl;
-
 		grunt.config.set('qunit_amd_child', data);
 		grunt.task.run('qunit_amd_child');
 
-		grunt.config.set('makeReport', {
-			src: data.coverage.tmp + '/*.json',
-			options : {
-				type : data.coverage.type || 'html',
-				dir : data.coverage.out,
-				print : 'detail'
-			}
-		});
-
-		grunt.task.run('makeReport');
+		reportCoverage(data.coverage);
 	});
 
 };
