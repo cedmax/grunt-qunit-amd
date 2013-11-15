@@ -8,7 +8,11 @@
 
 'use strict';
 
+//    "phantomjs": "~1.9.0-3",
+
+
 var phantom = require('node-phantom');
+var isbin = require('isbin');
 var fs = require('fs');
 
 module.exports = function(grunt) {
@@ -32,11 +36,38 @@ module.exports = function(grunt) {
 
 		var coverage = (data.coverage && data.coverage.tmp)? cover(data.coverage.tmp) : function(){};
 
-		phantom.create(callback(grunt, data, done, coverage) , {
-			phantomPath:require('phantomjs').path,
+		var config = {
 			parameters: {
 				'local-storage-path': '/dev/null',
 				'web-security': false
+			}
+		};
+
+		var launchPhantom = function(){
+			phantom.create(callback(grunt, data, done, coverage), config);
+		};
+
+		isbin('phantomjs', function(exists) {
+			if (!exists){
+				try{
+					config.phantomPath = require('phantomjs').path;
+					launchPhantom();
+				} catch(e){
+					var npm = require('npm');
+					npm.load(npm.config, function (err) {
+						if (err) { grunt.log.fail(err); }
+						npm.commands.install(["phantomjs"], function (err) {
+							if (err) {grunt.log.fail(err); }
+							config.phantomPath = require('phantomjs').path;
+							launchPhantom();
+						});
+						npm.on("log", function (message) {
+							grunt.log.writeln(message);
+						});
+					});
+				}
+			} else {
+				launchPhantom();
 			}
 		});
 	});
