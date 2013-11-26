@@ -99,6 +99,9 @@ require(['jquery', 'myLibrary'], function($, myLib){
 });
 ```
 
+**!IMPORTANT**: to avoid having the console flooded by logs I ignored the console.log in the output.
+In order to log properly only what you need to during development I provided a phantom.log method to be used instead
+
 
 #### options.require
 Type: `Object`
