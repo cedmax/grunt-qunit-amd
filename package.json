@@ -28,7 +28,7 @@
     "test": "grunt"
   },
   "dependencies": {
-    "node-phantom": "git://github.com/cedmax/node-phantom.git#2d04f4d6b269d08dd9ab96b504d42d053cebbde1",
+    "node-phantom": "git://github.com/cedmax/node-phantom.git#3e7ec1b14fdebde6082960c01f1e85a13f472423",
     "qunitjs": "~1.11.0",
     "requirejs": "2.1.8",
     "grunt": "~0.4.1",
