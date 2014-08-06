@@ -35,7 +35,6 @@ module.exports = function(testOpt, done, coverage, logger){
 			}
 		}
 
-
 		function initRequire(page, test){
 			phantomHelper.evaluate(page, function(requireConf, paths, test) {
 				if (requireConf) {
@@ -64,7 +63,6 @@ module.exports = function(testOpt, done, coverage, logger){
 			}, testOpt.require, {cwd: cwd, lib: __dirname},  test);
 		}
 
-
 		function injectDependency(page, dependencies, callback) {
 			var dep = dependencies.shift();
 			page.injectJs(dep, function(){
@@ -75,7 +73,6 @@ module.exports = function(testOpt, done, coverage, logger){
 				}
 			});
 		}
-
 
 		function exectuteTests(file, queue) {
 			return phantom.createPage(function(e, page) {

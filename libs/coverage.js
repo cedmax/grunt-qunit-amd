@@ -22,6 +22,16 @@ module.exports = function(grunt){
 						basePath : data.coverage.tmp
 					}
 				});
+
+				var log = grunt.log.ok;
+				grunt.log.ok = function(message){
+					if (grunt.task.current.name !== 'instrument') {
+						log(message);
+					} else {
+						grunt.log.write('.');
+					}
+				};
+
 				grunt.task.run('instrument');
 
 				data.require.baseUrl = data.coverage.tmp + '/' + data.require.baseUrl;
