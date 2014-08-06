@@ -1,8 +1,9 @@
 /*global current:true, window, QUnit, document, require:true */
 
-var phantomHelper = require("./helper.js");
+var phantomHelper = require('./helper.js');
 
-module.exports = function(grunt, testOpt, done, coverage){
+module.exports = function(testOpt, done, coverage, logger){
+	'use strict';
 
 	var suiteResults = { files: 0, success: 0, failure: 0 },
 		verbose = false, cwd = process.cwd();
@@ -16,18 +17,18 @@ module.exports = function(grunt, testOpt, done, coverage){
 			coverage(file, result.__coverage__);
 
 			if (verbose) {
-				grunt.log.writeln('');
+				logger.log('');
 			}
 			if (result.failure === 0) {
-				grunt.log.ok(file);
+				logger.success(file);
 			} else {
-				grunt.log.fail(file);
+				logger.fail(file);
 			}
 			if (queue.length){
 				loadSuite(queue.shift(), queue);
 			} else {
 				if (!verbose){
-					grunt.log.subhead('Files: ' + (suiteResults.files) + ' Tests: ' + (suiteResults.success + suiteResults.failure) + ' Success: ' + suiteResults.success + ' Failed: ' + suiteResults.failure);
+					logger.head('Files: ' + (suiteResults.files) + ' Tests: ' + (suiteResults.success + suiteResults.failure) + ' Success: ' + suiteResults.success + ' Failed: ' + suiteResults.failure);
 				}
 				phantom.exit();
 				done(suiteResults.failure? false : true);
@@ -80,28 +81,29 @@ module.exports = function(grunt, testOpt, done, coverage){
 			return phantom.createPage(function(e, page) {
 
 				page.onConsoleMessage = function(text){
-					if (text.indexOf('grunt.log')===0 && verbose){
+					if (text.indexOf('logger.')===0 && verbose){
 						/* jshint evil: true */
 						eval(text);
 						/* jshint evil: false */
 					} else {
-						grunt.log.verbose.writeln(text);
+						if (verbose){
+							logger.log(text);
+						}
 					}
 				};
 
 				page.onError = function(e){
-					grunt.log.writeln(JSON.stringify(e, null, 4));
+					logger.log(JSON.stringify(e, null, 4));
 				};
 
 				var testRunning = false;
 
-				page.open(__dirname +"/empty.html", function(e){
-
+				page.open(__dirname +'/empty.html', function(){
 					if (testRunning) {
 						return;
 					}
 					testRunning = true;
-					var dependencies = [__dirname + "/helper.js", __dirname +"/../node_modules/qunitjs/qunit/qunit.js"];
+					var dependencies = [__dirname + '/helper.js', __dirname +'/../node_modules/qunitjs/qunit/qunit.js'];
 
 					if (testOpt.include) {
 						dependencies = dependencies.concat(testOpt.include.map(function(f){ return cwd + '/' + f; }));
@@ -115,7 +117,7 @@ module.exports = function(grunt, testOpt, done, coverage){
 								failure: 0
 							};
 
-							window.onerror = function(e){
+							window.onerror = function(){
 								current.failure++;
 							};
 							QUnit.init();
@@ -125,7 +127,7 @@ module.exports = function(grunt, testOpt, done, coverage){
 
 							QUnit.testStart = function(obj){
 								testRunning = obj.name;
-								console.log("grunt.log.subhead('"+ obj.name.replace(/\'/g, "\\'") +"')");
+								console.log('logger.head("'+ obj.name.replace(/\"/g, '\\"') +'")');
 							};
 
 							QUnit.log = function(testResult){
@@ -137,17 +139,15 @@ module.exports = function(grunt, testOpt, done, coverage){
 									message = testResult.message;
 
 								if (result) {
-									console.log("grunt.log.ok('"+ (message || "test successful").replace(/\'/g, "\\'") +"')");
-
+									console.log('logger.success("'+ (message || 'test successful').replace(/\"/g, '\\"') +'")');
 								} else {
-									console.log("grunt.log.fail('"+ (message || "test failed").replace(/\n/g, "\\n").replace(/\'/g, "\\'") +"')");
+									console.log('logger.fail("'+ (message || 'test failed').replace(/\n/g, '\\n').replace(/\"/g, '\\"') +'")');
 
 									if (typeof expected!== 'undefined') {
-										console.log("grunt.log.error(' expected: "+ expected.toString().replace(/\'/g, "\\'") +"')");
+										console.log('logger.error(" expected: '+ expected.toString().replace(/\"/g, '\\"') +'")');
 									}
 									if (typeof actual!== 'undefined') {
-										//actual = actual+"";
-										console.log("grunt.log.error(' actual: "+ actual.toString().replace(/\'/g, "\\'") +"')");
+										console.log('logger.error(" actual: '+ actual.toString().replace(/\"/g, '\\"') +'")');
 									}
 								}
 							};
@@ -169,7 +169,7 @@ module.exports = function(grunt, testOpt, done, coverage){
 									});
 								}
 							}, function(){
-								grunt.log.fail('script timeout');
+								logger.fail('script timeout');
 								done(false);
 							}, 10000);
 						});
@@ -180,7 +180,7 @@ module.exports = function(grunt, testOpt, done, coverage){
 
 		function loadSuite(file, queue){
 			if (verbose) {
-				grunt.log.subhead(phantomHelper.consoleFlag(file));
+				logger.head(phantomHelper.consoleFlag(file));
 			}
 			exectuteTests(file, queue);
 		}
@@ -188,7 +188,7 @@ module.exports = function(grunt, testOpt, done, coverage){
 		function initialize(files){
 			suiteResults.files = files.length;
 			if (suiteResults.files === 0) {
-				grunt.log.fail("no test to be run");
+				logger.fail('no test to be run');
 				done(false);
 			}
 
@@ -196,7 +196,7 @@ module.exports = function(grunt, testOpt, done, coverage){
 			return files;
 		}
 
-		var queue = initialize(grunt.file.expand(testOpt.tests));
+		var queue = initialize(testOpt.tests);
 		loadSuite(queue.shift(), queue);
 	};
 };
