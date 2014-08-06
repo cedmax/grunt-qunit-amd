@@ -3,7 +3,8 @@ var fs = require('fs');
 module.exports = function(grunt){
 	'use strict';
 
-	grunt.loadNpmTasks('grunt-istanbul');
+	var loader = require('grunt-loadnpmtasks')(grunt);
+	loader.loadNpmTasks('grunt-istanbul');
 
 	return {
 		instrument: function(data){
