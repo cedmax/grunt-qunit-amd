@@ -50,6 +50,17 @@ grunt.initConfig({
 })
 ```
 
+In order to take advantage of [Istanbul](http://gotwarlost.github.io/istanbul/) code coverage you need to add to the configuration a section like this at the same level of require and include properties:
+
+```js
+coverage: {
+	out: 'path/to/your/coverage/output/folder',
+	tmp: 'path/to/a/temp/folder',
+	pathsToCover: ['glob/to/the/files', 'you/want/coverage/for']
+},
+```
+
+
 ```sh
 #to launch all tests:
 grunt qunit_amd:unit
