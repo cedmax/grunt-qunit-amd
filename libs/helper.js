@@ -19,7 +19,7 @@ var phantom = {
 			txt = txt.replace(/\'/g, "\\'");
 		}
 
-		console.log("grunt.log.writeln('"+ txt +"')");
+		console.log("logger.log('"+ txt +"')");
 	}
 };
 
