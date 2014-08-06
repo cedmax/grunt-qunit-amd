@@ -50,17 +50,6 @@ grunt.initConfig({
 })
 ```
 
-In order to take advantage of [Istanbul](http://gotwarlost.github.io/istanbul/) code coverage you need to add to the configuration a section like this at the same level of require and include properties:
-
-```js
-coverage: {
-	out: 'path/to/your/coverage/output/folder',
-	tmp: 'path/to/a/temp/folder',
-	pathsToCover: ['glob/to/the/files', 'you/want/coverage/for']
-},
-```
-
-
 ```sh
 #to launch all tests:
 grunt qunit_amd:unit
@@ -68,8 +57,6 @@ grunt qunit_amd:unit
 #to launch just one test:
 grunt qunit_amd:unit:myTestFileName
 ```
-
-
 
 ### Options
 
@@ -100,16 +87,26 @@ require(['jquery', 'myLibrary'], function($, myLib){
 		}
 	})
 
-
 	test('my test', 1, function(){
 		var myDiv = $('#domDependency');
 		myLib.setElement(myDiv[0]);
 		equal(myLib.getElement().id, 'domDependency', "everythings is fine");
 	});
-
 });
 ```
 
+#### options.coverage
+Type: `Object`
+
+In order to take advantage of [Istanbul](http://gotwarlost.github.io/istanbul/) code coverage reporting
+
+```js
+coverage: {
+	out: 'path/to/your/coverage/output/folder',
+	tmp: 'path/to/a/temp/folder',
+	pathsToCover: ['glob/to/the/files', 'you/want/coverage/for']
+},
+```
 
 #### options.require
 Type: `Object`
