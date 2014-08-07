@@ -45,7 +45,7 @@ module.exports = function(grunt) {
 					verbose:true,
 					coverage: {
 						tmp: 'tmp',
-						out: 'tmp'
+						out: 'out'
 					}
 				};
 				if (file) {

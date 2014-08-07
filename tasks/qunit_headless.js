@@ -9,49 +9,25 @@
 'use strict';
 
 module.exports = function(grunt) {
-
-	var phantom = require('node-phantom');
-	var runner = require('../libs/runner');
 	var util = grunt.util;
-	var installPhantom = require('../libs/installPhantom');
-	var cover = require('../libs/coverage.js')(grunt);
+	var coverageHelper = require('../libs/coverageHelper.js')(grunt);
+	var unitTestRunner = require('../libs/unitTestRunner');
 
 	grunt.registerTask('qunit_amd_runner', function () {
 		var done = this.async();
-		var data = grunt.config.get('qunit_amd_runner');
-		var coverage = (data.coverage && data.coverage.tmp)? cover.parse(data.coverage.tmp) : function(){};
-
-		var config = {
-			parameters: {
-				'local-storage-path': '/dev/null',
-				'web-security': false
-			}
+		var config = grunt.config.get('qunit_amd_runner');
+		config.tests = grunt.file.expand(config.tests);
+		
+		var saveReports = config.coverage && config.coverage.tmp && coverageHelper.save(config.coverage.tmp);
+		var logger = {
+			head: grunt.log.subhead, 
+			success: grunt.log.ok, 
+			fail: grunt.log.fail, 
+			error: grunt.log.error, 
+			log: grunt.log.writeln
 		};
 
-		var launchPhantom = function(path){
-			if (path) {
-				config.phantomPath = path;
-			}
-
-			data.tests = grunt.file.expand(data.tests);
-			phantom.create( 
-				runner(
-					data, 
-					done, 
-					coverage, 
-					{ 
-						head: grunt.log.subhead, 
-						success: grunt.log.ok, 
-						fail: grunt.log.fail, 
-						error: grunt.log.error, 
-						log: grunt.log.writeln
-					}
-				), 
-				config 
-			);
-		};
-
-		installPhantom(launchPhantom, grunt.log.writeln, grunt.log.fail);
+		unitTestRunner(config, logger, done, saveReports);
 	});
 
 	grunt.registerMultiTask('qunit_amd', function() {
@@ -60,12 +36,12 @@ module.exports = function(grunt) {
 		}
 		var data = this.data;
 
-		cover.instrument(data);
+		coverageHelper.instrument(data);
 
 		grunt.config.set('qunit_amd_runner', data);
 		grunt.task.run('qunit_amd_runner');
 
-		cover.report(data);
+		coverageHelper.report(data);
+		coverageHelper.clean(data);
 	});
-
 };

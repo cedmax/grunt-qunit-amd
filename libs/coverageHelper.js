@@ -2,7 +2,10 @@ var fs = require('fs');
 
 module.exports = function(grunt){
 	'use strict';
+	require('colors');
 
+	var rmdir = require('rimraf');
+	var path = require('path');
 	var loader = require('grunt-loadnpmtasks')(grunt);
 	loader.loadNpmTasks('grunt-istanbul');
 
@@ -29,7 +32,7 @@ module.exports = function(grunt){
 					if (grunt.task.current.name !== 'instrument') {
 						log(message);
 					} else {
-						grunt.log.write('.');
+						grunt.log.write('.'.green);
 					}
 				};
 
@@ -57,13 +60,25 @@ module.exports = function(grunt){
 				grunt.task.run('makeReport');
 			}
 		},
-		parse: 	function cover(path){
+		save: 	function cover(path){
 			return function(file, coverage){
 				if (coverage) {
 					var reportSlug = file.substr(file.lastIndexOf('/')+1, file.length).replace('.js', '');
 					fs.writeFileSync(path + '/'+ reportSlug+'.json', JSON.stringify(coverage, null, 4));
-				}
+				}	
 			};
+		},
+		clean: function(data){
+			if (data.coverage) {
+				grunt.task.registerTask('qunit_amd_clean', function(){
+					var done = this.async();
+					rmdir(path.resolve(data.coverage.tmp), function(){
+						done();
+					});
+				});
+
+				grunt.task.run('qunit_amd_clean');
+			}
 		}
 	};
 };
