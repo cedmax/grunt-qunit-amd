@@ -12,23 +12,22 @@ module.exports = (function(){
 		}
 	};
 
-	return function(data, logger, done, coverage){
+	return function(data, done, coverage){
 		var phantomLauncher = function(path){
 			if (path) {
 				config.phantomPath = path;
 			}
 
-			phantomApi.create( 
+			phantomApi.create(
 				phantomRunner(
-					data, 
-					done, 
-					coverage || function(){}, 
-					logger
-				), 
-				config 
+					data,
+					done,
+					coverage || function(){}
+				),
+				config
 			);
 		};
-		
-		phantomInstaller(phantomLauncher, logger.success, logger.fail);
+
+		phantomInstaller(phantomLauncher);
 	};
 })();

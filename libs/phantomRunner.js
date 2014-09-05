@@ -1,8 +1,15 @@
 /*global current:true, window, QUnit, document, require:true */
 
 var phantomHelper = require('./helper.js');
+var logger = require('chip')();
+require('colors');
 
-module.exports = function(testOpt, done, coverage, logger){
+var prefixes = logger.getPrefixes();
+prefixes.log = "";
+prefixes.trace = "";
+logger.setPrefixes(prefixes);
+
+module.exports = function(testOpt, done, coverage){
 	'use strict';
 
 	var suiteResults = { files: 0, success: 0, failure: 0 },
@@ -20,15 +27,16 @@ module.exports = function(testOpt, done, coverage, logger){
 				logger.log('');
 			}
 			if (result.failure === 0) {
-				logger.success(file);
+				logger.info(file);
 			} else {
-				logger.fail(file);
+				logger.error(file);
 			}
 			if (queue.length){
 				loadSuite(queue.shift(), queue);
 			} else {
 				if (!verbose){
-					logger.head('Files: ' + (suiteResults.files) + ' Tests: ' + (suiteResults.success + suiteResults.failure) + ' Success: ' + suiteResults.success + ' Failed: ' + suiteResults.failure);
+					logger.warn('Files: ' + (suiteResults.files) + ' Tests: ' + (suiteResults.success + suiteResults.failure) + ' Success: ' + suiteResults.success + ' Failed: ' + suiteResults.failure);
+					logger.log('');
 				}
 				phantom.exit();
 				done(suiteResults.failure? false : true);
@@ -91,6 +99,7 @@ module.exports = function(testOpt, done, coverage, logger){
 
 				page.onError = function(e){
 					logger.log(JSON.stringify(e, null, 4));
+					done(1);
 				};
 
 				var testRunning = false;
@@ -124,7 +133,7 @@ module.exports = function(testOpt, done, coverage, logger){
 
 							QUnit.testStart = function(obj){
 								testRunning = obj.name;
-								console.log('logger.head("'+ obj.name.replace(/\"/g, '\\"') +'")');
+								console.log('logger.trace("'+ obj.name.replace(/\"/g, '\\"') +'".bold)');
 							};
 
 							QUnit.log = function(testResult){
@@ -136,9 +145,9 @@ module.exports = function(testOpt, done, coverage, logger){
 									message = testResult.message;
 
 								if (result) {
-									console.log('logger.success("'+ (message || 'test successful').replace(/\"/g, '\\"') +'")');
+									console.log('logger.info("'+ (message || 'test successful').replace(/\"/g, '\\"') +'")');
 								} else {
-									console.log('logger.fail("'+ (message || 'test failed').replace(/\n/g, '\\n').replace(/\"/g, '\\"') +'")');
+									console.log('logger.error("'+ (message || 'test failed').replace(/\n/g, '\\n').replace(/\"/g, '\\"') +'")');
 
 									if (typeof expected!== 'undefined') {
 										console.log('logger.error(" expected: '+ expected.toString().replace(/\"/g, '\\"') +'")');
@@ -166,7 +175,7 @@ module.exports = function(testOpt, done, coverage, logger){
 									});
 								}
 							}, function(){
-								logger.fail('script timeout');
+								logger.error('script timeout');
 								done(false);
 							}, 10000);
 						});
@@ -177,7 +186,9 @@ module.exports = function(testOpt, done, coverage, logger){
 
 		function loadSuite(file, queue){
 			if (verbose) {
-				logger.head(phantomHelper.consoleFlag(file));
+				logger.log('');
+				logger.warn('TESTING:' + file);
+				logger.log('');
 			}
 			exectuteTests(file, queue);
 		}
@@ -185,7 +196,7 @@ module.exports = function(testOpt, done, coverage, logger){
 		function initialize(files){
 			suiteResults.files = files.length;
 			if (suiteResults.files === 0) {
-				logger.fail('no test to be run');
+				logger.error('no test to be run');
 				done(false);
 			}
 

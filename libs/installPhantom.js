@@ -1,6 +1,7 @@
 var isbin = require('isbin');
+var logger = require('chip')();
 
-module.exports = function(launchPhantom, logger, fail){
+module.exports = function(launchPhantom){
 	'use strict';
 
 	isbin('phantomjs', function(exists) {
@@ -10,13 +11,13 @@ module.exports = function(launchPhantom, logger, fail){
 			} catch(e){
 				var npm = require('npm');
 				npm.load(npm.config, function (err) {
-					if (err) { fail(err); }
+					if (err) { logger.error(err); }
 					npm.commands.install(['phantomjs'], function (err) {
-						if (err) { fail(err); }
+						if (err) { logger.error(err); }
 						launchPhantom(require('phantomjs').path);
 					});
 					npm.on('log', function (message) {
-						logger(message);
+						logger.info(message);
 					});
 				});
 			}

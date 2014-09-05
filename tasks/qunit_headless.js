@@ -11,23 +11,15 @@
 module.exports = function(grunt) {
 	var util = grunt.util;
 	var coverageHelper = require('../libs/coverageHelper.js')(grunt);
-	var unitTestRunner = require('../libs/unitTestRunner');
+	var unitTestRunner = require('.. /libs/unitTestRunner');
 
 	grunt.registerTask('qunit_amd_runner', function () {
 		var done = this.async();
 		var config = grunt.config.get('qunit_amd_runner');
 		config.tests = grunt.file.expand(config.tests);
-		
-		var saveReports = config.coverage && config.coverage.tmp && coverageHelper.save(config.coverage.tmp);
-		var logger = {
-			head: grunt.log.subhead, 
-			success: grunt.log.ok, 
-			fail: grunt.log.fail, 
-			error: grunt.log.error, 
-			log: grunt.log.writeln
-		};
 
-		unitTestRunner(config, logger, done, saveReports);
+		var saveReports = config.coverage && config.coverage.tmp && coverageHelper.save(config.coverage.tmp);
+		unitTestRunner(config, done, saveReports);
 	});
 
 	grunt.registerMultiTask('qunit_amd', function() {
