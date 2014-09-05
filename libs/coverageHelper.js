@@ -30,7 +30,7 @@ module.exports = function(grunt){
 				var log = grunt.log.ok;
 				grunt.log.ok = function(message){
 					if (grunt.task.current.name !== 'instrument') {
-						log(message);
+						(message)? log(message) : log();
 					} else {
 						grunt.log.write('.'.green);
 					}
@@ -46,6 +46,7 @@ module.exports = function(grunt){
 				}
 			}
 		},
+		
 		report: function(data){
 			if (data.coverage){
 				grunt.config.set('makeReport', {
