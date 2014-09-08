@@ -143,7 +143,7 @@ module.exports = function(testOpt, done, coverage){
 								var expected = testResult.expected,
 									actual = testResult.actual,
 									message = testResult.message,
-									makeCliFriendly = function (input) {
+									makeGruntFriendly = function (input) {
 										// Return the string 'isNaN' if that is the case
 										if (input.toString() === 'isNaN' && typeof input !== 'string') {
 											return 'isNaN';
@@ -162,10 +162,18 @@ module.exports = function(testOpt, done, coverage){
 									console.log('logger.error("'+ (message || 'test failed').replace(/\n/g, '\\n').replace(/\"/g, '\\"') +'")');
 
 									if (typeof expected!== 'undefined') {
-										console.log('logger.error(" expected: '+ makeCliFriendly(expected).replace(/\"/g, '\\"') +'")');
+<<<<<<< HEAD:libs/phantomRunner.js
+										console.log('logger.error(" expected: '+ expected.toString().replace(/\"/g, '\\"') +'")');
 									}
 									if (typeof actual!== 'undefined') {
-										console.log('logger.error(" actual: '+ makeCliFriendly(actual).replace(/\"/g, '\\"') + '")');
+										console.log('logger.error(" actual: '+ actual.toString().replace(/\"/g, '\\"') +'")');
+=======
+										console.log("grunt.log.error(' expected: "+ makeGruntFriendly(expected).replace(/\'/g, "\\'") +"')");
+									}
+									if (typeof actual!== 'undefined') {
+										//actual = actual+"";
+										console.log("grunt.log.error(' actual: "+ makeGruntFriendly(actual).replace(/\'/g, "\\'") +"')");
+>>>>>>> master:libs/runner.js
 									}
 								}
 							};
