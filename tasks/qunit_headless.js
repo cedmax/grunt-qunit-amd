@@ -11,7 +11,7 @@
 module.exports = function(grunt) {
 	var util = grunt.util;
 	var coverageHelper = require('../libs/coverageHelper.js')(grunt);
-	var unitTestRunner = require('../libs/unitTestRunner');
+	var unitTestRunner = require('qunit-amd-runner');
 
 	grunt.registerTask('qunit_amd_runner', function () {
 		var done = this.async();
