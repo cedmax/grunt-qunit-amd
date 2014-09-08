@@ -1,8 +1,16 @@
 /*global current:true, window, QUnit, document, require:true */
 
-var phantomHelper = require("./helper.js");
+var phantomHelper = require('./helper.js');
+var logger = require('chip')();
+require('colors');
 
-module.exports = function(grunt, testOpt, done){
+var prefixes = logger.getPrefixes();
+prefixes.log = "";
+prefixes.trace = "";
+logger.setPrefixes(prefixes);
+
+module.exports = function(testOpt, done, coverage){
+	'use strict';
 
 	var suiteResults = { files: 0, success: 0, failure: 0 },
 		verbose = false, cwd = process.cwd();
@@ -13,25 +21,27 @@ module.exports = function(grunt, testOpt, done){
 			suiteResults.success += result.success;
 			suiteResults.failure += result.failure;
 
+			coverage(file, result.__coverage__);
+
 			if (verbose) {
-				grunt.log.writeln('');
+				logger.log('');
 			}
 			if (result.failure === 0) {
-				grunt.log.ok(file);
+				logger.info(file);
 			} else {
-				grunt.log.fail(file);
+				logger.error(file);
 			}
 			if (queue.length){
 				loadSuite(queue.shift(), queue);
 			} else {
 				if (!verbose){
-					grunt.log.subhead('Files: ' + (suiteResults.files) + ' Tests: ' + (suiteResults.success + suiteResults.failure) + ' Success: ' + suiteResults.success + ' Failed: ' + suiteResults.failure);
+					logger.warn('Files: ' + (suiteResults.files) + ' Tests: ' + (suiteResults.success + suiteResults.failure) + ' Success: ' + suiteResults.success + ' Failed: ' + suiteResults.failure);
+					logger.log('');
 				}
 				phantom.exit();
 				done(suiteResults.failure? false : true);
 			}
 		}
-
 
 		function initRequire(page, test){
 			phantomHelper.evaluate(page, function(requireConf, paths, test) {
@@ -58,9 +68,8 @@ module.exports = function(grunt, testOpt, done){
 
 				document.head.appendChild(script);
 
-			}, testOpt.data.require, {cwd: cwd, lib: __dirname},  test);
+			}, testOpt.require, {cwd: cwd, lib: __dirname},  test);
 		}
-
 
 		function injectDependency(page, dependencies, callback) {
 			var dep = dependencies.shift();
@@ -73,36 +82,37 @@ module.exports = function(grunt, testOpt, done){
 			});
 		}
 
-
 		function exectuteTests(file, queue) {
 			return phantom.createPage(function(e, page) {
 
 				page.onConsoleMessage = function(text){
-					if (text.indexOf('grunt.log')===0 && verbose){
+					if (text.indexOf('logger.')===0 && verbose){
 						/* jshint evil: true */
 						eval(text);
 						/* jshint evil: false */
 					} else {
-						grunt.log.verbose.writeln(text);
+						if (verbose){
+							logger.log(text);
+						}
 					}
 				};
 
 				page.onError = function(e){
-					grunt.log.writeln(JSON.stringify(e, null, 4));
+					logger.log(JSON.stringify(e, null, 4));
+					done(1);
 				};
 
 				var testRunning = false;
 
-				page.open(__dirname +"/empty.html", function(e){
-
+				page.open(__dirname +'/empty.html', function(){
 					if (testRunning) {
 						return;
 					}
 					testRunning = true;
-					var dependencies = [__dirname + "/helper.js", __dirname +"/../node_modules/qunitjs/qunit/qunit.js"];
+					var dependencies = [__dirname + '/helper.js', __dirname +'/../node_modules/qunitjs/qunit/qunit.js'];
 
-					if (testOpt.data.include) {
-						dependencies = dependencies.concat(testOpt.data.include.map(function(f){ return cwd + '/' + f; }));
+					if (testOpt.include) {
+						dependencies = dependencies.concat(testOpt.include.map(function(f){ return cwd + '/' + f; }));
 					}
 
 					injectDependency(page, dependencies, function(){
@@ -113,7 +123,7 @@ module.exports = function(grunt, testOpt, done){
 								failure: 0
 							};
 
-							window.onerror = function(e){
+							window.onerror = function(){
 								current.failure++;
 							};
 							QUnit.init();
@@ -123,7 +133,7 @@ module.exports = function(grunt, testOpt, done){
 
 							QUnit.testStart = function(obj){
 								testRunning = obj.name;
-								console.log("grunt.log.subhead('"+ obj.name.replace(/\'/g, "\\'") +"')");
+								console.log('logger.trace("'+ obj.name.replace(/\"/g, '\\"') +'".bold)');
 							};
 
 							QUnit.log = function(testResult){
@@ -133,7 +143,7 @@ module.exports = function(grunt, testOpt, done){
 								var expected = testResult.expected,
 									actual = testResult.actual,
 									message = testResult.message,
-									makeGruntFriendly = function (input) {
+									makeCliFriendly = function (input) {
 										// Return the string 'isNaN' if that is the case
 										if (input.toString() === 'isNaN' && typeof input !== 'string') {
 											return 'isNaN';
@@ -147,17 +157,15 @@ module.exports = function(grunt, testOpt, done){
 									}
 
 								if (result) {
-									console.log("grunt.log.ok('"+ (message || "test successful").replace(/\'/g, "\\'") +"')");
-
+									console.log('logger.info("'+ (message || 'test successful').replace(/\"/g, '\\"') +'")');
 								} else {
-									console.log("grunt.log.fail('"+ (message || "test failed").replace(/\n/g, "\\n").replace(/\'/g, "\\'") +"')");
+									console.log('logger.error("'+ (message || 'test failed').replace(/\n/g, '\\n').replace(/\"/g, '\\"') +'")');
 
 									if (typeof expected!== 'undefined') {
-										console.log("grunt.log.error(' expected: "+ makeGruntFriendly(expected).replace(/\'/g, "\\'") +"')");
+										console.log('logger.error(" expected: '+ makeCliFriendly(expected).replace(/\"/g, '\\"') +'")');
 									}
 									if (typeof actual!== 'undefined') {
-										//actual = actual+"";
-										console.log("grunt.log.error(' actual: "+ makeGruntFriendly(actual).replace(/\'/g, "\\'") +"')");
+										console.log('logger.error(" actual: '+ makeCliFriendly(actual).replace(/\"/g, '\\"') + '")');
 									}
 								}
 							};
@@ -169,6 +177,9 @@ module.exports = function(grunt, testOpt, done){
 							}, function(){
 								if (page) {
 									page.evaluate(function(){
+										if (window.__coverage__){
+											current.__coverage__ = window.__coverage__;
+										}
 										return current;
 									}, function(e, result) {
 										page = null;
@@ -176,7 +187,7 @@ module.exports = function(grunt, testOpt, done){
 									});
 								}
 							}, function(){
-								grunt.log.fail('script timeout');
+								logger.error('script timeout');
 								done(false);
 							}, 10000);
 						});
@@ -187,7 +198,9 @@ module.exports = function(grunt, testOpt, done){
 
 		function loadSuite(file, queue){
 			if (verbose) {
-				grunt.log.subhead(phantomHelper.consoleFlag(file));
+				logger.log('');
+				logger.warn('TESTING:' + file);
+				logger.log('');
 			}
 			exectuteTests(file, queue);
 		}
@@ -195,15 +208,15 @@ module.exports = function(grunt, testOpt, done){
 		function initialize(files){
 			suiteResults.files = files.length;
 			if (suiteResults.files === 0) {
-				grunt.log.fail("no test to be run");
+				logger.error('no test to be run');
 				done(false);
 			}
 
-			verbose = (suiteResults.files === 1 || testOpt.data.verbose);
+			verbose = (suiteResults.files === 1 || testOpt.verbose);
 			return files;
 		}
 
-		var queue = initialize(grunt.file.expand(testOpt.data.tests));
+		var queue = initialize(testOpt.tests);
 		loadSuite(queue.shift(), queue);
 	};
 };

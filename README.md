@@ -58,8 +58,6 @@ grunt qunit_amd:unit
 grunt qunit_amd:unit:myTestFileName
 ```
 
-
-
 ### Options
 
 #### options.include
@@ -89,19 +87,28 @@ require(['jquery', 'myLibrary'], function($, myLib){
 		}
 	})
 
-
 	test('my test', 1, function(){
 		var myDiv = $('#domDependency');
 		myLib.setElement(myDiv[0]);
 		equal(myLib.getElement().id, 'domDependency', "everythings is fine");
 	});
-
 });
 ```
-
 **!IMPORTANT**: to avoid having the console flooded by logs I ignored the console.log in the output.
 In order to log properly only what you need to during development I provided a phantom.log method to be used instead
 
+#### options.coverage
+Type: `Object`
+
+In order to take advantage of [Istanbul](http://gotwarlost.github.io/istanbul/) code coverage reporting
+
+```js
+coverage: {
+	out: 'path/to/your/coverage/output/folder',
+	tmp: 'path/to/a/temp/folder',
+	pathsToCover: ['glob/to/the/files', 'you/want/coverage/for']
+},
+```
 
 #### options.require
 Type: `Object`
