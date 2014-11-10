@@ -99,7 +99,7 @@ module.exports = function(testOpt, done, coverage){
 
 				page.onError = function(e){
 					logger.log(JSON.stringify(e, null, 4));
-					done(1);
+					done(false);
 				};
 
 				var testRunning = false;
