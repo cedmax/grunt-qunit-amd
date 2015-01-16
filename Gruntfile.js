@@ -54,6 +54,28 @@ module.exports = function(grunt) {
 					config.tests = ["test/fixtures/tests/*.js"];
 				}
 				return config;
+			},
+			qunitConf: function(file){
+				var config = {
+					include: ['test/fixtures/libs/helper.js'],
+					require: {
+						baseUrl: 'test/fixtures/src'
+					},
+					qunit: {
+						requireExpects: false
+					},
+					verbose:true,
+					coverage: {
+						tmp: 'tmp',
+						out: 'out'
+					}
+				};
+				if (file) {
+					config.tests = ["test/fixtures/tests/"+file+"Test.js"];
+				} else {
+					config.tests = ["test/fixtures/tests/*.js"];
+				}
+				return config;
 			}
 		}
 

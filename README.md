@@ -94,8 +94,7 @@ require(['jquery', 'myLibrary'], function($, myLib){
 	});
 });
 ```
-**!IMPORTANT**: to avoid having the console flooded by logs I ignored the console.log in the output.
-In order to log properly only what you need to during development I provided a phantom.log method to be used instead
+I provided a phantom.log method to be used to log properly to console (HTMLElements already parsed, object already stringified, etc).
 
 #### options.coverage
 Type: `Object`
@@ -109,6 +108,28 @@ coverage: {
 	pathsToCover: ['glob/to/the/files', 'you/want/coverage/for']
 },
 ```
+
+#### options.qunit
+Type: `Object`
+
+QUnit configuration
+by default QUnit is configured like this:
+
+```js
+QUnit.config.blocking = false;
+QUnit.config.requireExpects = true;
+QUnit.config.autorun = false;
+```
+
+in order to override this settings you need just to pass a config object 
+
+```js
+qunit :{
+	requireExpects: false,
+	autorun: true
+}
+```
+
 
 #### options.require
 Type: `Object`

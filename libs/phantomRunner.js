@@ -43,6 +43,23 @@ module.exports = function(testOpt, done, coverage){
 			}
 		}
 
+		function configureQUnit(page, test){
+			phantomHelper.evaluate(page, function(qunitConf) {
+				QUnit.init();
+				QUnit.config.blocking = false;
+				QUnit.config.requireExpects = true;
+				QUnit.config.autorun = false;
+								//phantom.log(qunitConf)
+
+				for (var props in qunitConf) {
+					if (qunitConf.hasOwnProperty(props)) {
+						QUnit.config[props] = qunitConf[props];
+					}
+				}
+				//phantom.log(QUnit.config)
+			}, testOpt.qunit);
+		}
+
 		function initRequire(page, test){
 			phantomHelper.evaluate(page, function(requireConf, paths, test) {
 				if (requireConf) {
@@ -126,11 +143,7 @@ module.exports = function(testOpt, done, coverage){
 							window.onerror = function(){
 								current.failure++;
 							};
-							QUnit.init();
-							QUnit.config.blocking = false;
-							QUnit.config.requireExpects = true;
-							QUnit.config.autorun = false;
-
+							
 							QUnit.testStart = function(obj){
 								testRunning = obj.name;
 								console.log('logger.trace("'+ obj.name.replace(/\"/g, '\\"') +'".bold)');
@@ -171,6 +184,7 @@ module.exports = function(testOpt, done, coverage){
 							};
 						}, function(){
 							initRequire(page, file);
+							configureQUnit(page)
 
 							phantomHelper.waitFor(page, function(){
 								return !QUnit.config.queue.length;
