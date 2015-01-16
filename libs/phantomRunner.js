@@ -82,7 +82,7 @@ module.exports = function(testOpt, done, coverage){
 			});
 		}
 
-		function exectuteTests(file, queue) {
+		function executeTests(file, queue) {
 			return phantom.createPage(function(e, page) {
 
 				page.onConsoleMessage = function(text){
@@ -202,7 +202,7 @@ module.exports = function(testOpt, done, coverage){
 				logger.warn('TESTING:' + file);
 				logger.log('');
 			}
-			exectuteTests(file, queue);
+			executeTests(file, queue);
 		}
 
 		function initialize(files){
