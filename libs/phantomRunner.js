@@ -157,28 +157,27 @@ module.exports = function(testOpt, done, coverage){
 									actual = testResult.actual,
 									message = testResult.message,
 									makeCliFriendly = function (input) {
-										// Return the string 'isNaN' if that is the case
 										if (input.toString() === 'isNaN' && typeof input !== 'string') {
 											return 'isNaN';
-										// Return the string undefined if input is undefined
 										} else if (typeof input === 'undefined') {
 											return 'undefined';
-										// Return indication for JSON.parse to run and the stringified content
+										} else if (typeof input === 'string') {
+											return input;
 										} else {
 											return JSON.stringify(input);
 										}
 									}
 
 								if (result) {
-									console.log('logger.info("'+ (message || 'test successful').replace(/\"/g, '\\"') +'")');
+									console.log('logger.info("'+ (message || 'test successful').replace(/([^\\])(\")/g, '$1\\"') +'")');
 								} else {
-									console.log('logger.error("'+ (message || 'test failed').replace(/\n/g, '\\n').replace(/\"/g, '\\"') +'")');
+									console.log('logger.error("'+ (message || 'test failed').replace(/\n/g, '\\n').replace(/([^\\])(\")/g, '$1\\"') +'")');
 
 									if (typeof expected!== 'undefined') {
-										console.log('logger.error(" expected: '+ makeCliFriendly(expected).replace(/\"/g, '\\"') +'")');
+										console.log('logger.error(" expected: '+ makeCliFriendly(expected).replace(/([^\\])(\")/g, '$1\\"') +'")');
 									}
 									if (typeof actual!== 'undefined') {
-										console.log('logger.error(" actual: '+ makeCliFriendly(actual).replace(/\"/g, '\\"') + '")');
+										console.log('logger.error(" actual: '+ makeCliFriendly(actual).replace(/([^\\])(\")/g, '$1\\"') + '")');
 									}
 								}
 							};
