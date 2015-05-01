@@ -49,14 +49,12 @@ module.exports = function(testOpt, done, coverage){
 				QUnit.config.blocking = false;
 				QUnit.config.requireExpects = true;
 				QUnit.config.autorun = false;
-								//phantom.log(qunitConf)
 
 				for (var props in qunitConf) {
 					if (qunitConf.hasOwnProperty(props)) {
 						QUnit.config[props] = qunitConf[props];
 					}
 				}
-				//phantom.log(QUnit.config)
 			}, testOpt.qunit);
 		}
 
