@@ -16,7 +16,6 @@ module.exports = function(grunt) {
 	grunt.registerTask('qunit_amd_runner', function () {
 		var done = this.async();
 		var config = grunt.config.get('qunit_amd_runner');
-		config.tests = grunt.file.expand(config.tests);
 		config.verbose = grunt.cli.options.verbose;
 
 		var saveReports = config.coverage && config.coverage.tmp && coverageHelper.save(config.coverage.tmp);
