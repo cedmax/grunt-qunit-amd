@@ -1,4 +1,4 @@
-# grunt-qunit-amd
+# [deprecated] grunt-qunit-amd
 
 > Grunt plugin to run Qunit tests on your AMD libraries without having to create html pages.
 
